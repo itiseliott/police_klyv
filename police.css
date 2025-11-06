@@ -1,0 +1,220 @@
+/* police.css - Mise en Page Épurée et Moderne */
+
+/*
+* 1. Variables Globales & Réinitialisation de Base
+*/
+:root {
+    /* Palette inspirée par le design élégant et les thèmes papier/encre */
+    --couleur-primaire: #3c3b52; /* Encre / Gris Ardoise Profond */
+    --couleur-secondaire: #8d99ae; /* Gris Bleu Doux pour les bordures/notes */
+    --couleur-accent: #ffb703; /* Jaune Vif pour l'interaction/l'accent */
+    --couleur-fond-page: #f9f7f3; /* Blanc cassé / Papier léger */
+    --couleur-fond-contenu: #ffffff; /* Blanc pur pour le bloc principal */
+    --couleur-texte-sombre: #2a2a35; /* Texte principal */
+
+    --ombre-carte: 0 10px 30px rgba(0, 0, 0, 0.08); /* Ombre douce et élevée */
+    --transition-rapide: all 0.2s ease-in-out;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Open Sans', 'Helvetica Neue', sans-serif; /* Police lisible et moderne */
+    background-color: var(--couleur-fond-page);
+    color: var(--couleur-texte-sombre);
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Aligner le contenu en haut */
+    min-height: 100vh;
+}
+
+/*
+* 2. Structure Principale (La "Carte" du Générateur)
+*/
+.container {
+    max-width: 700px;
+    width: 100%;
+    margin-top: 50px;
+    background: var(--couleur-fond-contenu);
+    padding: 50px;
+    border-radius: 15px; /* Coins arrondis élégants */
+    box-shadow: var(--ombre-carte);
+    border-top: 5px solid var(--couleur-accent); /* Bande d'accentuation en haut */
+}
+
+h1 {
+    font-family: 'Playfair Display', 'Georgia', serif; /* Rappel visuel de la police */
+    font-size: 2.8em;
+    font-weight: 700;
+    color: var(--couleur-primaire);
+    margin-bottom: 5px;
+    line-height: 1.1;
+}
+
+p {
+    margin-bottom: 30px;
+    color: var(--couleur-secondaire);
+    font-size: 1.1em;
+}
+
+/*
+* 3. Zones de Saisie et de Résultat
+*/
+
+/* Zone de Saisie */
+textarea {
+    width: 100%;
+    min-height: 150px;
+    margin-bottom: 25px;
+    padding: 18px;
+    font-size: 1.2em;
+    border: 1px solid var(--couleur-secondaire);
+    border-radius: 10px;
+    transition: var(--transition-rapide);
+    resize: vertical;
+    background-color: var(--couleur-fond-page); /* Légèrement différent du fond du conteneur */
+    font-family: monospace; /* Pour une meilleure distinction du texte saisi */
+}
+
+textarea:focus {
+    border-color: var(--couleur-accent);
+    box-shadow: 0 0 0 4px rgba(255, 183, 3, 0.3);
+    outline: none;
+}
+
+/* Zone de Résultat - L'élément central */
+.resultat {
+    position: relative;
+    border: 3px solid var(--couleur-primaire);
+    padding: 25px 20px;
+    background: var(--couleur-fond-page);
+    min-height: 80px;
+    font-size: 2.2em; /* Très grand pour l'effet */
+    line-height: 1.3;
+    cursor: pointer;
+    user-select: all;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    text-align: center;
+    word-wrap: break-word;
+    transition: var(--transition-rapide);
+    font-style: italic; /* Pour coller au style Bold Italic de l'unicode */
+}
+
+.resultat:hover {
+    background-color: #ffffff;
+    border-color: var(--couleur-accent);
+}
+
+/* Texte par défaut du résultat */
+.resultat[data-initial-text]::after {
+    content: attr(data-initial-text);
+    font-size: 0.6em;
+    color: var(--couleur-secondaire);
+    display: block;
+    margin-top: 10px;
+}
+/* Masquer le texte par défaut quand il y a du contenu généré */
+#resultat:not(:empty)[data-initial-text]::after {
+    display: none;
+}
+
+
+/*
+* 4. Note d'Avertissement
+*/
+.note {
+    color: var(--couleur-secondaire);
+    font-size: 0.8em;
+    margin-top: 40px;
+    padding: 15px;
+    background-color: #f0f4f8; /* Fond légèrement ombré pour la note */
+    border-radius: 8px;
+    font-style: italic;
+    text-align: center;
+    border-left: 5px solid var(--couleur-secondaire);
+}
+
+/* 5. Styles pour la Modale de Copie Personnalisée */
+
+.modal-overlay {
+    /* Cache la modale par défaut */
+    display: none; 
+    position: fixed;
+    z-index: 1000; /* Assure qu'elle est au-dessus de tout */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.6); /* Fond noir semi-transparent */
+    backdrop-filter: blur(3px); /* Effet de flou moderne (si supporté) */
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.modal-overlay.show {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 1;
+}
+
+.modal-content {
+    background-color: var(--couleur-fond-contenu);
+    margin: auto;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: var(--ombre-profonde);
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    transform: translateY(-50px);
+    transition: transform 0.3s ease-in-out;
+}
+
+.modal-overlay.show .modal-content {
+    transform: translateY(0);
+}
+
+.modal-title {
+    display: block;
+    font-size: 1.8em;
+    font-weight: 700;
+    color: var(--couleur-primaire);
+    margin-bottom: 15px;
+}
+
+.copied-text-display {
+    border: 2px dashed var(--couleur-accent);
+    padding: 15px;
+    margin: 15px 0 25px 0;
+    word-wrap: break-word;
+    font-size: 1.5em;
+    color: var(--couleur-texte-sombre);
+    font-style: italic;
+    border-radius: 8px;
+    background-color: var(--couleur-fond-page);
+}
+
+.modal-content button {
+    background-color: var(--couleur-accent);
+    color: var(--couleur-texte-sombre);
+    border: none;
+    padding: 10px 30px;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    transition: var(--transition-rapide);
+}
+
+.modal-content button:hover {
+    background-color: #ffc947; /* Lighter shade of accent */
+    box-shadow: var(--ombre-legere);
+}

@@ -1,0 +1,127 @@
+--- START OF FILE police.html ---
+
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Générateur de Texte "Playfair SC" Unicode</title>
+    <!-- Assurez-vous que votre fichier CSS s'appelle bien police.css -->
+    <link rel="stylesheet" href="police.css">
+</head>
+
+<body>
+
+    <!-- Le conteneur principal pour appliquer le style de "carte" élégant -->
+    <div class="container">
+
+        <h1>Générateur de Texte "Playfair SC" (Simulé)</h1>
+        <p>Entrez votre texte ci-dessous. Le résultat sera généré dans un style Unicode "Gras" qui simule l'effet de
+            Petites
+            Capitales.</p>
+
+        <!-- Zone de Saisie -->
+        <textarea id="saisie" oninput="convertirEnPlayfairSC()" placeholder="Tapez votre texte ici..."></textarea>
+
+        <!-- Zone de Résultat Copiable, avec l'attribut pour le texte par défaut géré par CSS -->
+        <div class="resultat" id="resultat" onclick="copierTexte()"
+            data-initial-text="Cliquez sur le résultat pour copier">Cliquez pour copier</div>
+
+        <div class="note">
+            ATTENTION : Ceci utilise des symboles Unicode existants (Mathématique Gras) et ne reproduit PAS la police
+            Playfair Display SC originale. Le résultat peut varier selon la plateforme.
+        </div>
+
+    </div> <!-- Fin du div.container -->
+
+
+    <!-- MODALE DE NOTIFICATION PERSONNALISÉE -->
+    <div id="custom-alert" class="modal-overlay">
+        <div class="modal-content">
+            <span class="modal-title">Copie Réussie !</span>
+            <p>Le texte suivant a été copié :</p>
+            <div id="copied-text-display" class="copied-text-display"></div>
+            <button onclick="fermerModale()">OK</button>
+        </div>
+    </div>
+
+    <script>
+        // --- COLONNE 1 : Le Mappage (Objet JavaScript) ---
+        // NOUVEAU Mappage des caractères standards vers le bloc Unicode "Mathématique Gras (Bold)"
+        const playfairSC_mapping = {
+            // MAJUSCULES (Bold)
+            'A': '𝗔', 'B': '𝗕', 'C': '𝗖', 'D': '𝗗', 'E': '𝗘', 'F': '𝗙', 'G': '𝗚', 'H': '𝗛', 'I': '𝗜',
+            'J': '𝗝', 'K': '𝗞', 'L': '𝗟', 'M': '𝗠', 'N': '𝗡', 'O': '𝗢', 'P': '𝗣', 'Q': '𝗤', 'R': '𝗥',
+            'S': '𝗦', 'T': '𝗧', 'U': '𝗨', 'V': '𝗩', 'W': '𝗪', 'X': '𝗫', 'Y': '𝗬', 'Z': '𝗭',
+
+            // Minuscules converties en leur équivalent MAJUSCULE Bold (pour simuler les Small Caps)
+            'a': '𝗔', 'b': '𝗕', 'c': '𝗖', 'd': '𝗗', 'e': '𝗘', 'f': '𝗙', 'g': '𝗚', 'h': '𝗛', 'i': '𝗜',
+            'j': '𝗝', 'k': '𝗞', 'l': '𝗟', 'm': '𝗠', 'n': '𝗡', 'o': '𝗢', 'p': '𝗣', 'q': '𝗤', 'r': '𝗥',
+            's': '𝗦', 't': '𝗧', 'u': '𝗨', 'v': '𝗩', 'w': '𝗪', 'x': '𝗫', 'y': '𝗬', 'z': '𝗭',
+
+            // Chiffres (Les chiffres Bold restent les mêmes)
+            '0': '𝟬', '1': '𝟭', '2': '𝟮', '3': '𝟯', '4': '𝟰', '5': '𝟱', '6': '𝟲', '7': '𝟳', '8': '𝟴', '9': '𝟵',
+        };
+
+        // --- COLONNE 2 : La Fonction de Conversion ---
+        function convertirEnPlayfairSC() {
+            const texteSaisi = document.getElementById('saisie').value;
+            let texteConverti = '';
+
+            for (let i = 0; i < texteSaisi.length; i++) {
+                const char = texteSaisi[i];
+
+                // Récupère l'équivalent Unicode ou garde le caractère original (pour les espaces, ponctuation, etc.)
+                texteConverti += playfairSC_mapping[char] || char;
+            }
+
+            // Affichage du résultat
+            const resultatElement = document.getElementById('resultat');
+            if (texteConverti) {
+                resultatElement.textContent = texteConverti;
+            } else {
+                resultatElement.textContent = 'Cliquez pour copier';
+            }
+        }
+
+        // Fonction pour ouvrir la modale personnalisée
+        function ouvrirModale(texte) {
+            const modale = document.getElementById('custom-alert');
+            const display = document.getElementById('copied-text-display');
+
+            // Insère le texte généré dans la modale pour l'affichage
+            display.textContent = texte;
+
+            // Affiche la modale avec la classe 'show'
+            modale.classList.add('show');
+        }
+
+        // Fonction pour fermer la modale
+        function fermerModale() {
+            document.getElementById('custom-alert').classList.remove('show');
+        }
+
+        // Nouvelle fonction pour copier le texte (remplace l'ancienne)
+        function copierTexte() {
+            const resultatDiv = document.getElementById('resultat');
+            const texteACopier = resultatDiv.textContent;
+
+            if (texteACopier && texteACopier !== 'Cliquez pour copier') {
+                navigator.clipboard.writeText(texteACopier).then(() => {
+                    // AU LIEU D'APPELER alert(), NOUS APPELONS LA MODALE PERSONNALISÉE
+                    ouvrirModale(texteACopier);
+                }).catch(err => {
+                    console.error('Erreur de copie:', err);
+                    // Si la copie échoue, vous pouvez toujours utiliser alert() ou une autre modale d'erreur
+                    alert('Erreur de copie : Veuillez réessayer.');
+                });
+            }
+        }
+
+        // Exécute la fonction une première fois si le champ est vide
+        convertirEnPlayfairSC(); 
+    </script>
+
+</body>
+
+</html>
